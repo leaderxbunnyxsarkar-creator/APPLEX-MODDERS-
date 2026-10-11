@@ -1,0 +1,18 @@
+// Firestore Rules template — customize the admin UID after creating the admin user.
+// Replace YOUR_ADMIN_FIREBASE_UID with the UID shown in Firebase Authentication.
+// Public visitors may read only public website settings; only admin can write.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == "YOUR_ADMIN_FIREBASE_UID";
+    }
+    match /siteConfig/public {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
